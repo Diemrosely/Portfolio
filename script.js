@@ -42,10 +42,6 @@ function displayHelp() {
     scrollToBottom(); 
 }
 
-  // Log terminal elements to check if they're being properly fetched
-  console.log("Terminal Container:", myTerminalContainer);
-  console.log("Open Terminal Icon:", openTerminalIcon);
-
   // Display last logged in
   function displayLastLoggedIn() {
     const now = new Date();
@@ -71,7 +67,7 @@ function displayHelp() {
 
   // Open terminal functionality
   async function open_terminal() {
-    if (terminalInitialized) return; // Avoid reinitializing
+    if (terminalInitialized) return; 
     displayLastLoggedIn();
     await delay(1000);
 
