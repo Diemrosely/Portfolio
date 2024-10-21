@@ -1,241 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
   <script src="https://unpkg.com/feather-icons"></script>
   <title>Portfolio</title>
 </head>
-<body>
 
-    <!-- Status bar with time, battery, and network icon -->
-    <div class="status-bar">
-        <div class="time" id="current-time"></div>
-        <div class="icons">
-            <span class="moon-icon" id="theme-icon">🌙</span>
-            <span class="network-icon">📶</span>
-            <span class="battery-icon">🔋</span>
-        </div>
+<body>
+  <!-- Status bar with time, battery, and network icon -->
+  <div class="status-bar">
+    <div class="time" id="current-time"></div>
+    <div class="icons">
+      <span class="moon-icon" id="theme-icon">🌙</span>
+      <span class="network-icon">📶</span>
+      <span class="battery-icon">🔋</span>
     </div>
-    
-    <!-- Centered navigation -->
-    <div class="navigation">
-      <ul>
-        <li><a href="#" onclick="openModal('about-me')">
+  </div>
+
+  <!-- Centered navigation -->
+  <div class="navigation">
+    <ul>
+      <li><a href="#" onclick="openModal('about-me')">
           <div class="name-container">
             <span class="static-text">About</span>
             <span class="backspace-anim" id="me-text">Me. </span><span id="new-name"></span>
-        </div>
-        </li>
-        <li><a href="#" onclick="openModal('my-work')">My Work</a></li>
-        <li><a href="#" onclick="openModal('my-skills')">My Skills</a></li>
-        <li><a href="#" onclick="openModal('contact-me')">Contact Me</a></li>
-      </ul>
-    </div>
+          </div>
+      </li>
+      <li><a href="#" onclick="openModal('my-work')">My Work</a></li>
+      <li><a href="#" onclick="openModal('my-skills')">My Skills</a></li>
+      <li><a href="#" onclick="openModal('contact-me')">Contact Me</a></li>
+    </ul>
+  </div>
 
-   <!-- Sticky Note Modals -->
-    <div id="about-me" class="modal sticky-note" style="display: none;">
-        <button class="close-btn">&times;</button>
-            <!-- Static "Hi, I'm" text -->
-      <div class="static-intro">
+  <!-- Sticky Note Modals -->
+  <div id="about-me" class="modal sticky-note" style="display: none;">
+    <button class="close-btn">&times;</button>
+    <!-- Static "Hi, I'm" text -->
+    <div class="static-intro">
       <span>Hello, I am </span>
       <span class="animated-words"></span>
     </div>
-  
-  <!-- Static paragraph text -->
+
+    <!-- Static paragraph text -->
     <p class="about-me-content">
-      I’m a Full Stack Developer with a passion for coding and a strong foundation in JavaScript, React, Node.js, and the MERN stack. 
-      With a background that spans sales, professional consulting, and serving as a teaching assistant for edX, I bring a unique blend 
-      of technical expertise and client-focused problem-solving. My skills range from building complex, responsive web applications to 
+      I’m a Full Stack Developer with a passion for coding and a strong foundation in JavaScript, React, Node.js, and
+      the MERN stack.
+      With a background that spans sales, professional consulting, and serving as a teaching assistant for edX, I bring
+      a unique blend
+      of technical expertise and client-focused problem-solving. My skills range from building complex, responsive web
+      applications to
       mastering modern web technologies like MongoDB, APIs, and AWS.
     </p>
-    </div>
-    
-    <div id="my-work" class="modal sticky-note" style="display: none;">
-        <button class="close-btn">&times;</button>
-        <div class="bento-box-container">
-            <!-- First Column: Large Text Boxes -->
-            <div class="box text-1 text-box large-text" style="grid-row: 1 / span 2;">
-                <p>Creative Design</p>
-            </div>
-            <div class="box text-2 text-box large-text" style="grid-row: 3 / span 2;">
-                <p>Responsive Layout</p>
-            </div>
-            
-            <!-- Second Column: Image Box and Buttons under it -->
-            <div class="stash-app box image-box square-image" style="grid-row: 1 / span 1;">
-                <img src="./assets/wad.png" alt="Image 1" class="bento-image">
-            </div>
-            <div class="box button-container" style="grid-row: 2 / span 1; grid-column: 2;">
-              <button onclick="window.open('https://banking-app-drab-beta.vercel.app/', '_blank')" class="button1" type="button">
-                Live Application
-              </button>  
-              
-              <button onclick="window.open('https://github.com/Diemrosely/Banking-App', '_blank')" class="button2" type="button">
-                Source Code
-              </button>
-              </div>
-    
-            <!-- Third Row: Another Image Box and Buttons under it -->
-            <div class="box image-box square-image" style="grid-row: 3 / span 1;">
-                <img src="./assets/apple.jpg" alt="Image 2" class="bento-image">
-            </div>
-            <div class="box button-container" style="grid-row: 4 / span 1; grid-column: 2;">
-              <button onclick="window.open('https://banking-app-drab-beta.vercel.app/', '_blank')" class="button3" type="button">
-                Live Application
-              </button>  
-              
-              <button onclick="window.open('https://github.com/Diemrosely/Banking-App', '_blank')" class="button4" type="button">
-                Source Code
-              </button>
-              </div>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div id="my-skills" class="modal sticky-note" style="display: none;">
-        <button class="close-btn">&times;</button>
-        <div class="skills">
-          <h3 class="skillsTop">HTML5</h3>
-         
-         <div class="skillsBottom">
-          <div class="progress">
-            <div class="html progress-bar progress-bar-info" style="width:100%;" role="progressbar">
-            </div>
-          </div>
-         </div>
-    
-         <h3 class="skillsTop">CSS3/Sass/Bootstrap/Tailwinds</h3>
-    
-         <div class="skillsBottom">
-          <div class="progress">
-            <div class="css progress-bar progress-bar-info" style="width:100%;"  role="progressbar">
-            </div>
-          </div>
-        </div>
-    
-        <h3 class="skillsTop">Javascript</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="jquery progress-bar progress-bar-info" style="width:100%;" role="progressbar" ></div>
-          </div>
-        </div>
-        <h3 class="skillsTop">React</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="javascript progress-bar progress-bar-info" style="width:90%;" role="progressbar">
-            </div>
-          </div>
-        </div>
-        
-            <h3 class="skillsTop">PostGres/SQL</h3>
-    
-           <div class="skillsBottom">
-            <div class="progress">
-              <div class="adobe progress-bar progress-bar-info" style="width:97%;" role="progressbar">
-              </div>
-            </div>
-          </div>
-    
-    
-        <h3 class="skillsTop">NodeJS</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="wordpress progress-bar progress-bar-info" style="width:90%;"  role="progressbar">
-            </div>
-          </div>
-        </div>
-    
-        <h3 class="skillsTop">Typescript</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="ui progress-bar progress-bar-info" style="width:70%;" role="progressbar">
-            </div>
-          </div>
-        </div>
+  </div>
 
-        <h3 class="skillsTop">AWS</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="ui progress-bar progress-bar-info" style="width:60%;" role="progressbar">
-            </div>
-          </div>
-        </div>
+  <div id="my-work" class="modal sticky-note" style="display: none;">
+    <button class="close-btn">&times;</button>
+    <div class="bento-box-container">
+      <!-- First Column: Large Text Boxes -->
+      <div class="box text-1 text-box large-text" style="grid-row: 1 / span 2;">
+        <p>Creative Design</p>
+      </div>
+      <div class="box text-2 text-box large-text" style="grid-row: 3 / span 2;">
+        <p>Responsive Layout</p>
+      </div>
 
-        <h3 class="skillsTop">Python</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="ui progress-bar progress-bar-info" style="width:40%;" role="progressbar">
-            </div>
-          </div>
-        </div>
+      <!-- Second Column: Image Box and Buttons under it -->
+      <div class="stash-app box image-box square-image" style="grid-row: 1 / span 1;">
+        <img src="./assets/wad.png" alt="Image 1" class="bento-image">
+      </div>
+      <div class="box button-container" style="grid-row: 2 / span 1; grid-column: 2;">
+        <button onclick="window.open('https://banking-app-drab-beta.vercel.app/', '_blank')" class="button1"
+          type="button">
+          Live Application
+        </button>
 
-        <h3 class="skillsTop">UI/UX/Figma/Lucid Chart</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="ui progress-bar progress-bar-info" style="width:90%;" role="progressbar">
-            </div>
+        <button onclick="window.open('https://github.com/Diemrosely/Banking-App', '_blank')" class="button2"
+          type="button">
+          Source Code
+        </button>
+      </div>
+
+      <!-- Third Row: Another Image Box and Buttons under it -->
+      <div class="box image-box square-image" style="grid-row: 3 / span 1;">
+        <img src="./assets/apple.jpg" alt="Image 2" class="bento-image">
+      </div>
+      <div class="box button-container" style="grid-row: 4 / span 1; grid-column: 2;">
+        <button onclick="window.open('https://banking-app-drab-beta.vercel.app/', '_blank')" class="button3"
+          type="button">
+          Live Application
+        </button>
+
+        <button onclick="window.open('https://github.com/Diemrosely/Banking-App', '_blank')" class="button4"
+          type="button">
+          Source Code
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+  <div id="my-skills" class="modal sticky-note" style="display: none;">
+    <button class="close-btn">&times;</button>
+    <div class="skills">
+      <h3 class="skillsTop">HTML5</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="html progress-bar progress-bar-info" style="width:100%;" role="progressbar">
           </div>
         </div>
-     
-    
-        <h3 class="skillsTop">Agile Methodology</h3>
-    
-        <div class="skillsBottom">
-          <div class="progress">
-            <div class="rwd progress-bar progress-bar-info" style="width:100%;" role="progressbar">
-           </div>
-         </div>
-        </div>
-    </div>
-    </div>
-    
-    <div id="contact-me" class="modal sticky-note" style="display: none;">
-        <button class="close-btn">&times;</button>
-        <div class="wrap">
-          <div class="icon">
-            <div class="contact-label"><img src="./assets/contact.svg" style="max-height: 80px; max-width: 80px"/></div>
-            <div class="contact-links">
-              <div class="square-1"><a href="#"><i data-feather="linkedin"></i></a></div>
-              <div class="square-2"><a href="#"><i data-feather="layout"></i></a></div>
-              <div class="square-3"><a href="#"><i data-feather="terminal"></i></a></div>
-              <div class="square-4"><a href="#"><i data-feather="github"></i></a></div>
-            </div>
+      </div>
+
+      <h3 class="skillsTop">CSS3/Sass/Bootstrap/Tailwinds</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="css progress-bar progress-bar-info" style="width:100%;" role="progressbar">
           </div>
         </div>
+      </div>
+
+      <h3 class="skillsTop">Javascript</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="jquery progress-bar progress-bar-info" style="width:100%;" role="progressbar"></div>
+        </div>
+      </div>
+      <h3 class="skillsTop">React</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="javascript progress-bar progress-bar-info" style="width:90%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+      <h3 class="skillsTop">PostGres/SQL</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="adobe progress-bar progress-bar-info" style="width:97%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+
+      <h3 class="skillsTop">NodeJS</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="wordpress progress-bar progress-bar-info" style="width:90%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+      <h3 class="skillsTop">Typescript</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="ui progress-bar progress-bar-info" style="width:70%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+      <h3 class="skillsTop">AWS</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="ui progress-bar progress-bar-info" style="width:60%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+      <h3 class="skillsTop">Python</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="ui progress-bar progress-bar-info" style="width:40%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+      <h3 class="skillsTop">UI/UX/Figma/Lucid Chart</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="ui progress-bar progress-bar-info" style="width:90%;" role="progressbar">
+          </div>
+        </div>
+      </div>
+
+
+      <h3 class="skillsTop">Agile Methodology</h3>
+
+      <div class="skillsBottom">
+        <div class="progress">
+          <div class="rwd progress-bar progress-bar-info" style="width:100%;" role="progressbar">
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div id="contact-me" class="modal sticky-note" style="display: none;">
+    <button class="close-btn">&times;</button>
+    <div class="wrap">
+      <div class="contact-icons">
+        <div class="contact-label"><img src="./assets/contact.svg" style="max-height: 80px; max-width: 80px" /></div>
+        <div class="contact-links">
+          <div class="square-1"><a href="#"><i data-feather="linkedin"></i></a></div>
+          <div class="square-2"><a href="#"><i data-feather="layout"></i></a></div>
+          <div class="square-3"><a href="#"><i data-feather="terminal"></i></a></div>
+          <div class="square-4"><a href="#"><i data-feather="github"></i></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Terminal Container -->
-  <div class="container inconsolata" id="terminal-container" style="display: none;">
+  <div class="container" id="terminal-container" style="display: none;">
     <div class="menu">
       <div class="buttons-flex">
-        <div class="button red" id="close-terminal"></div> 
-        <div class="button yellow" id="minimize-terminal"></div> 
+        <div class="button red" id="close-terminal"></div>
+        <div class="button yellow" id="minimize-terminal"></div>
         <div class="button green"></div>
       </div>
       <div class="title">
-        <a href="https://github.com" target="_blank"><h1><i class='fab fa-github'></i> github.com</h1></a>
+        <a href="https://github.com/Diemrosely" target="_blank">
+          <h1><i class='fab fa-github'></i> diem -- -github - shell</h1>
+        </a>
       </div>
     </div>
     <div id="app"></div>
   </div>
 
-   <!-- Taskbar -->
-   <div class="taskbar">
+  <!-- Taskbar -->
+  <div class="taskbar">
     <div class="taskbar-icon" id="terminal-taskbar-icon" style="display: none;">
       <i class="fas fa-terminal"></i> Terminal
     </div>
@@ -244,7 +254,11 @@
     </div>
   </div>
 
-    <!-- Script for time and modals -->
-    <script src="script.js"></script>
+  <!-- Script for time and modals -->
+  <script src="script.js"></script>
+  <script src="logic.js"></script>
+  <script src="aboutMe.js"></script>
+
 </body>
+
 </html>

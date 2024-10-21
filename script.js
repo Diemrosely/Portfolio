@@ -1,369 +1,250 @@
-// Display current time
-function updateTime() {
-    const timeElement = document.getElementById('current-time');
-    const now = new Date();
-    timeElement.textContent = now.toLocaleTimeString();
-}
-setInterval(updateTime, 1000); 
+document.addEventListener("DOMContentLoaded", function () {
+  let myTerminalContainer = document.getElementById("terminal-container");
+  let openTerminalIcon = document.getElementById("open-terminal-icon");
+  let terminalTaskbarIcon = document.getElementById("terminal-taskbar-icon");
+  let minimizeTerminal = document.getElementById("minimize-terminal");
+  let closeTerminal = document.getElementById("close-terminal");
+  let app = document.querySelector("#app");
 
-function displayLastLoggedIn() {
+  let terminalInitialized = false;
+  let delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+  // List of commands and their descriptions
+  const commands = [
+    { command: "about me", description: "Who am I and what do I do." },
+    { command: "all", description: "See all commands." },
+    { command: "social -a", description: "All my social networks." },
+    { command: "projects", description: "My github projects." },
+    { command: "clear", description: "Clean the terminal." },
+    { command: "help", description: "Show available commands." },
+  ];
+
+  // Function to display the help screen without clearing the terminal
+function displayHelp() {
+    // Create a help container and style it with the help commands
+    const helpContainer = document.createElement('div');
+    helpContainer.setAttribute('class', 'help-container');
+
+    // Title for help section
+    const title = document.createElement('h3');
+    title.textContent = 'Available Commands';
+    helpContainer.appendChild(title);
+
+    // Add each command with its description
+    commands.forEach(({ command, description }) => {
+        const commandElement = document.createElement('div');
+        commandElement.setAttribute('class', 'help-command');
+        commandElement.innerHTML = `<strong>${command}</strong>: ${description}`;
+        helpContainer.appendChild(commandElement);
+    });
+
+    app.appendChild(helpContainer);
+    scrollToBottom(); 
+}
+
+  // Log terminal elements to check if they're being properly fetched
+  console.log("Terminal Container:", myTerminalContainer);
+  console.log("Open Terminal Icon:", openTerminalIcon);
+
+  // Display last logged in
+  function displayLastLoggedIn() {
     const now = new Date();
-    const formattedDate = now.toLocaleString(); 
+    const formattedDate = now.toLocaleString();
     createText(`Last Logged In: ${formattedDate}`);
-}
+  }
 
-let openStickyCount = 0;  
+  // Scroll to bottom
+  function scrollToBottom() {
+    app.scrollTop = app.scrollHeight;
+  }
 
-
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-
-
-    const offset = openStickyCount * 30;  
-    modal.style.display = 'block';
-    modal.style.left = `${20 + offset}px`;  
-    modal.style.top = `${80 + offset}px`;   
-    makeDraggable(modal);
-
-    openStickyCount++;
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    modal.style.display = 'none';
-}
-
-// Add close button functionality for modals
-document.querySelectorAll('.modal .close-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const modal = this.parentElement;
-        modal.style.display = 'none';
-    });
-});
-
-// Make the modals draggable and ensure they stay within the viewport
-function makeDraggable(modal) {
-    let isDragging = false;
-    let startX, startY, offsetX = modal.offsetLeft, offsetY = modal.offsetTop;
-
-    modal.addEventListener('mousedown', function (e) {
-        if (e.target.classList.contains('close-btn')) return;  // Prevent dragging from close button
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        document.body.style.cursor = 'grabbing';  // Change cursor to grabbing
-    });
-
-    document.addEventListener('mousemove', function (e) {
-        if (isDragging) {
-            // Calculate the difference from where the mouse was clicked to where it is moved
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-
-            // Update the modal's offset values
-            offsetX += deltaX;
-            offsetY += deltaY;
-
-            // Constrain the modal within the viewport (window)
-            const modalRect = modal.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-
-            if (offsetX < 0) offsetX = 0;
-            if (offsetY < 0) offsetY = 0;
-
-            if (offsetX + modalRect.width > viewportWidth) {
-                offsetX = viewportWidth - modalRect.width;
-            }
-            if (offsetY + modalRect.height > viewportHeight) {
-                offsetY = viewportHeight - modalRect.height;
-            }
-
-            // Apply the new position to the modal
-            modal.style.left = `${offsetX}px`;
-            modal.style.top = `${offsetY}px`;
-
-            // Reset the starting coordinates to prevent jumpy movement
-            startX = e.clientX;
-            startY = e.clientY;
-        }
-    });
-
-    document.addEventListener('mouseup', function () {
-        if (isDragging) {
-            isDragging = false;
-            document.body.style.cursor = 'default';  // Restore default cursor after dragging
-        }
-    });
-}
-
-
-// Terminal open/close and minimize logic
-const terminalContainer = document.getElementById('terminal-container');
-const openTerminalIcon = document.getElementById('open-terminal-icon');
-const terminalTaskbarIcon = document.getElementById('terminal-taskbar-icon');
-const minimizeTerminal = document.getElementById('minimize-terminal');
-const closeTerminal = document.getElementById('close-terminal');
-let terminalInitialized = false; // Track whether the terminal has been initialized
-
-// Function to center the terminal
-function centerTerminal() {
-    terminalContainer.style.display = 'block';
-    terminalContainer.style.left = '50%';
-    terminalContainer.style.top = '50%';
-    terminalContainer.style.transform = 'translate(-50%, -50%)';
-    
-    if (!terminalInitialized) {
-        open_terminal(); 
-        terminalInitialized = true;
+  // Terminal Keypress Event
+  app.addEventListener("keypress", async function (event) {
+    if (event.key === "Enter") {
+      await delay(150);
+      getInputValue();
+      removeInput();
+      await delay(150);
+      new_line();
     }
-}
+  });
 
-async function startServer() {
-    createText("Last Logged In: " + new Date().toLocaleString());
+  // Open terminal functionality
+  async function open_terminal() {
+    if (terminalInitialized) return; // Avoid reinitializing
+    displayLastLoggedIn();
     await delay(1000);
 
-    const startingText = createText("Starting the server");
+    let startingText = createText("Starting the server");
     let dotCount = 0;
 
-    // Create a loading effect with the dots
+    // Loading dots animation
     const intervalId = setInterval(() => {
-        dotCount = (dotCount + 1) % 4; // Cycle through 0, 1, 2, 3 dots
-        startingText.textContent = "Starting the server" + ".".repeat(dotCount);
-    }, 500); // Change the dots every 500ms
+      dotCount = (dotCount + 1) % 4;
+      startingText.textContent = "Starting the server" + ".".repeat(dotCount);
+    }, 500);
 
-    await delay(2500); // Simulate server starting for 2.5 seconds
-    clearInterval(intervalId); // Stop the dots animation after the delay
-    startingText.textContent = "Server started successfully."; // Final message
-}
+    await delay(2500);
+    clearInterval(intervalId);
+    startingText.textContent = "Server started successfully.";
 
-
-
-openTerminalIcon.addEventListener('click', () => {
-    centerTerminal();  // Position the terminal in the center of the screen
-    open_terminal();   // Trigger the terminal functionality (last logged in, loading, etc.)
-});
-
-// Minimize terminal (yellow button)
-minimizeTerminal.addEventListener('click', () => {
-    terminalContainer.style.display = 'none';
-    terminalTaskbarIcon.style.display = 'flex'; // Show icon on taskbar
-});
-
-// Restore terminal from taskbar
-terminalTaskbarIcon.addEventListener('click', () => {
-    centerTerminal();
-    terminalTaskbarIcon.style.display = 'none'; 
-});
-
-// Close terminal (red button)
-closeTerminal.addEventListener('click', () => {
-    terminalContainer.style.display = 'none';
-    terminalTaskbarIcon.style.display = 'none'; 
-});
-
-// Terminal functionality
-const app = document.querySelector("#app");  
-const delay = ms => new Promise(res => setTimeout(res, ms));  
-
-app.addEventListener("keypress", async function(event){
-  if(event.key === "Enter"){
-    await delay(150);
-    getInputValue();
-    removeInput();
-    await delay(150);
-    new_line();
-    scrollToBottom(); 
-  }
-});
-
-// Open terminal from taskbar icon
-async function open_terminal() {
-    displayLastLoggedIn();  // Display the last logged in time
-    await startServer();    // Start the server with animated loading
     await delay(1000);
+    createText("Welcome");
+    await delay(700);
     createText("You can run several commands:");
-    
-    createCode(">about me", "Who am I and what do I do.");
-    createCode(">all", "See all commands.");
-    createCode(">social -a", "All my social networks.");
-    
-    await delay(600);
+    createCode("about me", "Who am I and what do I do.");
+    createCode("all", "See all commands.");
+    createCode("social -a", "All my social networks.");
+    createCode("--help", "Learn more.");
+    await delay(500);
     new_line();
-    scrollToBottom();  // Ensure the terminal scrolls to the bottom
-}
-
-// async function open_terminal(){
-//   createText("Starting the server...");
-//   await delay(2500);
-//   createText("You can run several commands:");
- 
-//   createCode(">about me", "Who am I and what do I do.");
-//   createCode(">all", "See all commands.");
-//   createCode(">social -a", "All my social networks.");
-  
-//   await delay(600);
-//   new_line();
-//   scrollToBottom(); // Ensure scrolling to the bottom
-// }
-
-// Terminal helper functions
-function new_line(){
-  const p = document.createElement("p");
-  const span1 = document.createElement("span");
-  const span2 = document.createElement("span");
-  p.setAttribute("class", "path")
-  p.textContent = "# user";
-  span1.textContent = " in";
-  span2.textContent = " ~/portfolio";
-  p.appendChild(span1);
-  p.appendChild(span2);
-  app.appendChild(p);
-
-  const div = document.createElement("div");
-  div.setAttribute("class", "type");
-  const i = document.createElement("i");
-  i.setAttribute("class", "fas fa-angle-right icone");
-  div.appendChild(i);
-
-  const input = document.createElement("input");
-  input.setAttribute("type", "text");
-  div.appendChild(input);
-
-  app.appendChild(div);
-
-  input.focus();
-}
-
-function createText(text){
-  const p = document.createElement("p");
-  p.textContent = text;
-  app.appendChild(p);
-}
-
-function createCode(code, description){
-  const p = document.createElement("p");
-  p.innerHTML = `<span class="code">${code}:</span> ${description}`;
-  app.appendChild(p);
-}
-
-function removeInput(){
-  const div = document.querySelector(".type");
-  app.removeChild(div);
-}
-
-function getInputValue(){
-  const value = document.querySelector("input").value;
-  if (value === "about me") {
-    createText("Hi, I am a web developer...");
-  } else if (value === "all") {
-    createText("You can type: 'about me', 'all', 'social -a'");
-  } else if (value === "social -a") {
-    createText("GitHub: github.com");
-  } else {
-    createText(`Command not found: ${value}`);
+    scrollToBottom();
+    terminalInitialized = true; // Terminal is now initialized
   }
-}
 
-function scrollToBottom(){
-  app.scrollTop = app.scrollHeight;
-}
+  // Creating a new line for the terminal
+  function new_line() {
+    const p = document.createElement("p");
+    const span1 = document.createElement("span");
+    const span2 = document.createElement("span");
+    p.setAttribute("class", "path");
+    p.textContent = "# user";
+    span1.textContent = " in";
+    span2.textContent = " ~/diem";
+    p.appendChild(span1);
+    p.appendChild(span2);
+    app.appendChild(p);
 
-// Theme toggle functionality
-const themeIcon = document.getElementById('theme-icon');
-let isDarkMode = false;
+    const div = document.createElement("div");
+    div.setAttribute("class", "type");
+    const i = document.createElement("i");
+    i.setAttribute("class", "fas fa-angle-right icon");
 
-themeIcon.addEventListener('click', function() {
-    isDarkMode = !isDarkMode;
-    if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-        document.querySelectorAll('.modal').forEach(modal => modal.classList.add('dark-mode'));
-        document.querySelector('.status-bar').classList.add('dark-mode');
-        document.querySelectorAll('.navigation ul li a').forEach(link => link.classList.add('dark-mode'));
-        themeIcon.textContent = '🌞';  
+    const input = document.createElement("input");
+    div.appendChild(i);
+    div.appendChild(input);
+    app.appendChild(div);
+    input.focus();
+  }
+
+  // Removing the current input from the terminal
+  function removeInput() {
+    const div = document.querySelector(".type");
+    app.removeChild(div);
+  }
+
+  // Get input value and handle commands
+  async function getInputValue() {
+    const value = document.querySelector("input").value;
+    if (value === "all") {
+      trueValue(value);
+      createCode(
+        "projects",
+        "My github page with my projects. Follow me there ;)"
+      );
+      createCode("about me", "Who am I and what do I do.");
+      createCode("social -a", "All my social networks.");
+      createCode("--help", "Learn more.");
+      createCode("clear", "Clean the terminal.");
+    } else if (value === "projects") {
+      trueValue(value);
+      createText(
+        "<a href='https://github.com/diemrosely' target='_blank'><i class='fab fa-github white'></i> github.com/diemrosely</a>"
+      );
+    } else if (value === "about me") {
+      trueValue(value);
+      createText("Hi, I'm Diem ;)");
+      createText("I made this app!");
+    } else if (value === "--help") {
+      trueValue(value);
+      displayHelp(); 
+    } else if (value === "social -a") {
+      trueValue(value);
+      createText(
+        "<a href='https://github.com/Diemrosely/' target='_blank'><i class='fab fa-github white'></i> github.com/</a>"
+      );
+      createText(
+        "<a href='https://www.linkedin.com/in/' target='_blank'><i class='fab fa-linkedin-in white'></i> linkedin.com/in/</a>"
+      );
+      createText(
+        "<a href='https://diemrosely.github.io/Portfolio/' target='_blank'><i class='fas fa-laptop-code'></i> porfolio.com/</a>"
+      );
+    } else if (value === "clear") {
+      document
+        .querySelectorAll("p")
+        .forEach((e) => e.parentNode.removeChild(e));
+      document
+        .querySelectorAll("section")
+        .forEach((e) => e.parentNode.removeChild(e));
     } else {
-        document.body.classList.remove('dark-mode');
-        document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('dark-mode'));
-        document.querySelector('.status-bar').classList.remove('dark-mode');
-        document.querySelectorAll('.navigation ul li a').forEach(link => link.classList.remove('dark-mode'));
-        themeIcon.textContent = '🌙';  
+      falseValue(value);
+      createText(`Command not found: ${value}`);
     }
+  }
+
+  // Adding correct command to the terminal output
+  function trueValue(value) {
+    const div = document.createElement("section");
+    div.setAttribute("class", "type2");
+    const i = document.createElement("i");
+    i.setAttribute("class", "fas fa-angle-right icon error");
+    const terminalMessage = document.createElement("h3");
+    terminalMessage.setAttribute("class", "success");
+    terminalMessage.textContent = `${value}`;
+    div.appendChild(i);
+    div.appendChild(terminalMessage);
+    app.appendChild(div);
+  }
+
+  // Adding incorrect command to the terminal output
+  function falseValue(value) {
+    const div = document.createElement("section");
+    div.setAttribute("class", "type2");
+    const i = document.createElement("i");
+    i.setAttribute("class", "fas fa-angle-right icone error");
+    const terminalMessage = document.createElement("h3");
+    terminalMessage.setAttribute("class", "error");
+    terminalMessage.textContent = `${value}`;
+    div.appendChild(i);
+    div.appendChild(terminalMessage);
+    app.appendChild(div);
+  }
+
+  // Create a text element for the terminal
+  function createText(text) {
+    const p = document.createElement("p");
+    p.innerHTML = text;
+    app.appendChild(p);
+    return p; // Return the created element
+  }
+
+  // Create a code output in the terminal
+  function createCode(code, text) {
+    const p = document.createElement("p");
+    p.setAttribute("class", "code");
+    p.innerHTML = `${code} <br/><span class='text'> ${text} </span>`;
+    app.appendChild(p);
+  }
+
+  // Define the functions that handle terminal minimize, close, and open
+  const handleTerminalMinimize = () => {
+    myTerminalContainer.style.display = "none";
+    terminalTaskbarIcon.style.display = "flex";
+  };
+
+  const handleCloseTerminal = () => {
+    myTerminalContainer.style.display = "none";
+    terminalTaskbarIcon.style.display = "none";
+  };
+
+  const handleTerminalOpen = () => {
+    console.log("Opening terminal");
+    myTerminalContainer.style.display = "block"; // Show the terminal
+    open_terminal(); // Trigger the terminal opening logic
+  };
+
+  // Terminal event handlers
+  openTerminalIcon.addEventListener("click", handleTerminalOpen);
+  minimizeTerminal.addEventListener("click", handleTerminalMinimize);
+  closeTerminal.addEventListener("click", handleCloseTerminal);
 });
-
-// Array of words to cycle through in the animation
-const words = ['a Developer', 'a Designer', 'a Consultant', 'a Problem Solver'];
-const animatedWordsElement = document.querySelector('.animated-words');
-let wordIndex = 0;
-
-// Function to show words one after another with smooth transitions
-function showWords() {
-    if (wordIndex < words.length) {
-        animatedWordsElement.classList.add('fade-out');
-        setTimeout(() => {
-            animatedWordsElement.classList.remove('fade-out');
-            animatedWordsElement.textContent = words[wordIndex];
-            animatedWordsElement.classList.add('fade-in');
-            wordIndex++;
-            setTimeout(() => {
-                animatedWordsElement.classList.remove('fade-in');
-                showWords(); 
-            }, 2000); 
-        }, 500);
-    } else {
-        wordIndex = 0; 
-        showWords();
-    }
-}
-
-// Function to trigger the animation when modal is opened
-function openAboutMeModal() {
-    const aboutMeModal = document.getElementById('about-me');
-    aboutMeModal.style.display = 'block';
-    wordIndex = 0;
-    showWords();
-}
-
-document.querySelector('[onclick="openModal(\'about-me\')"]').onclick = function() {
-    openModal('about-me'); 
-    openAboutMeModal(); 
-};
-
-let zIndexCounter = 100; 
-
-// Make the sticky note move to the top when clicked
-function bringToFront(modal) {
-    zIndexCounter++; 
-    modal.style.zIndex = zIndexCounter;
-
-
-    modal.parentElement.appendChild(modal);
-}
-
-// Attach click event to all modals
-document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('click', function() {
-        bringToFront(modal);  
-    });
-});
-
-feather.replace({
-    'height': 50,
-    'width': 50,
-    'stroke-width': 1
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const meText = document.getElementById('me-text');
-    const newName = document.getElementById('new-name');
-  
-    // Trigger the backspace animation on page load
-    meText.classList.add('backspace-anim');
-  
-    // Once "Me" is backspaced, trigger the typing animation for "Diem"
-    meText.addEventListener('animationend', () => {
-      meText.style.display = 'none'; // Hide "Me" after backspace
-      newName.textContent = 'Diem. '; // Set the new name text
-      newName.style.width = '5ch'; // Start typing animation by increasing the width
-    });
-  });
-  
